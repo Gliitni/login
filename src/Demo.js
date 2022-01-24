@@ -1,77 +1,213 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { useState } from "react";
+import Welcome from "./Welcome.js";
+import Login from "./Login.js";
+import Products from "./Products";
 
-function Demo() {
-    return (
-      <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          </ul>
-  
-          <hr />
-  
-          {/*
-            A <Switch> looks through all its children <Route>
-            elements and renders the first one whose path
-            matches the current URL. Use a <Switch> any time
-            you have multiple routes, but you want only one
-            of them to render at a time
-          */}
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/about">
-              <About />
-            </Route>
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
-    );
-  }
-  
-  // You can think of these components as "pages"
-  // in your app.
-  
-  function Home() {
-    return (
-      <div>
-        <h2>Home</h2>
-      </div>
-    );
-  }
-  
-  function About() {
-    return (
-      <div>
-        <h2>About</h2>
-      </div>
-    );
-  }
-  
-  function Dashboard() {
-    return (
-      <div>
-        <h2>Dashboard</h2>
-      </div>
-    );
-  }
-  export default Demo;
-  
+import ProductDetails from "./ProductDetails";
+
+const App = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [log, setLog] = useState();
+  console.log("log", log);
+
+  const history = useHistory();
+
+  const login = () => {
+    console.log("up", username, password);
+    const requestOption = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, password: password }),
+    };
+    fetch("https://chtimesheet.azurewebsites.net/api/Auth/login", requestOption)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return response.json().then((data) => {
+            const error = "login failed";
+            throw new Error(error);
+          });
+        }
+      })
+
+      .then((data) => {
+        console.log("data", data);
+        setLog(data);
+        localStorage.setItem("user", data.email);
+        localStorage.setItem("token", data.token);
+        history.push("/Welcome");
+      })
+      .catch((err) => {
+        console.log("err", err);
+        alert(err.message);
+      });
+  };
+
+  //   fetch('https://chtimesheet.azurewebsites.net/api/Auth/login', {
+  //     method: 'post',
+  //     headers: {
+  //       "Content-type": "application/json; charset=UTF-8"
+  //     },
+  //     body:JSON.stringify(username,password)
+  //   }).then(res =>{
+  //     return res.json(); //error here
+  //   }).then(data=>{
+  //     console.log(data);
+  //   }).catch((error) => {
+  //     console.log(error);
+  //  alert(error.message);
+  //   })
+  //   }
+  return (
+    <div>
+      <main>
+        <Switch>
+          {/* {(log.token?log.username:'you are loged') */}
+          {/* { log.token &&( */}
+
+          <Route path="/" exact>
+            <Redirect to="/Welcome" />
+          </Route>
+
+          {/* )} */}
+
+          {/* {log.token!=""&&
+         (  */}
+          <Route path="/Login">
+            <Login
+              login={login}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          </Route>
+          {/* )}  */}
+          {/* {log.token&&( */}
+
+          {/* { log.token=''&& */}
+          {/* (  */}
+          <Route path="/welcome">
+            <Welcome />
+          </Route>
+          {/* )} */}
+          {/* )} */}
+          {/* {!log &&  ( */}
+          <Route path="/products" exact>
+            <Products />
+          </Route>
+          {/* )}  */}
+          <Route path="/Products/:ProductId">
+            <ProductDetails />
+          </Route>
+        </Switch>
+      </main>
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { useState } from "react";
+import Welcome from "./Welcome.js";
+import Login from "./Login.js";
+import Products from "./Products";
+
+import ProductDetails from "./ProductDetails";
+
+const App = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [log, setLog] = useState();
+  console.log("log", log);
+
+  const history = useHistory();
+
+  const handleLogin = () => {
+    fetch("https://chtimesheet.azurewebsites.net/api/Auth/login", {
+      method: "post",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            const error = "login failed";
+            throw new Error(error);
+          });
+        }
+      })
+
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.message);
+      });
+  };
+
+  //   fetch('https://chtimesheet.azurewebsites.net/api/Auth/login', {
+  //     method: 'post',
+  //     headers: {
+  //       "Content-type": "application/json; charset=UTF-8"
+  //     },
+  //     body:JSON.stringify(username,password)
+  //   }).then(res =>{
+  //     return res.json(); //error here
+  //   }).then(data=>{
+  //     console.log(data);
+  //   }).catch((error) => {
+  //     console.log(error);
+  //  alert(error.message);
+  //   })
+  //   }
+  return (
+    <div>
+      <main>
+        <Switch>
+          <Route path="/Login">
+            <Login
+              login={handleLogin}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          </Route>
+          {/* )}  */}
+          {/* {log.token&&( */}
+
+          {/* { log.token=''&& */}
+          {/* (  */}
+          {/* <Route path="/welcome">
+            <Welcome />
+          </Route> */}
+          {/* )} */}
+          {/* )} */}
+          {/* {!log &&  ( */}
+          {/* <Route path="/products" exact>
+            <Products />
+          </Route> */}
+          {/* )}  */}
+          {/* <Route path="/Products/:ProductId">
+            <ProductDetails />
+          </Route> */}
+        </Switch>
+      </main>
+    </div>
+  );
+};
+
+export default App;
+

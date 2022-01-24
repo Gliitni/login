@@ -1,33 +1,44 @@
-import React from "react"
+import React from "react";
 
-import classes from './App.css';
+import classes from "./App.css";
 
-
-const Login=(prop)=> {
+const Login = (prop) => {
   // console.log("prop",prop)
   // const login =()=>{
   // localStorage.getItem('user',log)
- 
 
   return (
-<>
-  <form className="row">
-  
+    <>
+      <form className="row">
         <h1>SIGN IN </h1>
         {/* {prop.name} */}
-    <div className="row">
-      <label>Email:</label><br/>
-      <input text="email" placeholder="Enter email" onChange={(e)=>prop.setUsername(e.target.value)}/><br/>
-      <label >Password:</label><br/>
-      <input text="password" placeholder="Enter password" onChange={(e)=>prop.setPassword(e.target.value)}/><br/>
-      
-      <button className="button" onClick={prop.login}>Login</button>
-       
-    </div>     
-    </form> 
-   
+        <div className="row">
+          <label>Email:</label>
+          <br />
+          <input
+            text="email"
+            placeholder="Enter email"
+            onChange={(e) => prop.setUsername(e.target.value)}
+          />
+          <br />
+          <label>Password:</label>
+          <br />
+          <input
+            text="password"
+            placeholder="Enter password"
+            onChange={(e) => prop.setPassword(e.target.value)}
+          />
+          <br />
+
+          <button className="button" type="button" onClick={prop.login}>
+            Login
+          </button>
+          <br />
+         
+        </div>
+      </form>
     </>
   );
-}
+};
 
 export default Login;
