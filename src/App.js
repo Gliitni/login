@@ -5,6 +5,7 @@ import Login from "./Login.js";
 import Products from "./Products";
 import Home from "./Home";
 import ProductDetails from "./ProductDetails";
+import axios from "axios";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -21,7 +22,7 @@ const App = () => {
   useEffect(() => {
     const login = localStorage.getItem("user");
     if (login) {
-      const User = JSON.parse(login);
+      const User = login;
       setLog(User);
     }
   }, []);
@@ -34,36 +35,28 @@ const App = () => {
     localStorage.clear();
     history.push("/Login");
   };
-
   const handleLogin = () => {
-    fetch("https://chtimesheet.azurewebsites.net/api/Auth/login", {
-      method: "post",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
+    axios
+      .post("https://chtimesheet.azurewebsites.net/api/Auth/login", {
+        username: username,
+        password: password,
+      })
+
       .then((res) => {
-        console.log(res);
-        if (res.ok) {
-          return res.json();
+        console.log("ress", res);
+
+        if (res.data) {
+          // localStorage.setItem("token", res.token);
+          localStorage.setItem("user", JSON.stringify(res.data));
+          setLog(res);
+          history.push("/Home");
+          // console.log("ress", res);
         } else {
-          return res.json().then((data) => {
-            const error = "login failed";
-            throw new Error(error);
-          });
+          const error = "login failed";
+          throw new Error(error);
         }
       })
 
-      .then((data) => {
-        console.log(data);
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        setLog(data.user);
-        history.push("/Home");
-      })
       .catch((error) => {
         console.log(error);
         alert(error.message);
