@@ -1,3 +1,115 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import axios from "axios";
+import MainHeader from "./MainHeader";
+const UpdateData = () => {
+  const [projectManagerId, setProjectManagerId] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [description, setDescription] = useState("");
+  const [users, setUsers] = useState([]);
+  const [state, setState] = useState();
+  console.log("state", state);
+
+  console.log("prop", useParams());
+
+  const { projectId } = useParams();
+  console.log("pid", projectId);
+  const history = useHistory();
+  useEffect(() => {
+    axios
+      .get(`https://chtimesheet.azurewebsites.net/api/Project/${projectId}`)
+      .then((pr) => {
+        console.log("pr", pr.data);
+        setState(pr.data);
+        setProjectManagerId(state.projectManagerId);
+        setProjectName(projectName);
+        setDescription(description);
+        setUsers(users);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleUpdate = () => {};
+  const onChange = (e) => {
+    console.log("e", e);
+    const { name } = e.target;
+    //state update.
+  };
+
+  return (
+    <>
+      <MainHeader />
+      <form className="row">
+        <h1>UPDATE FORM </h1>
+        <div className="row">
+          <label>ProjectManagerId:</label>
+          <br />
+          <input
+            type="text"
+            value={projectManagerId}
+            onChange={setProjectManagerId(onChange)}
+          />
+          <br />
+          <label>ProjectName:</label>
+          <br />
+          <input
+            text="name"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+          />
+          <br />
+          <label>Description:</label>
+          <br />
+          <input
+            text="name"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <br />
+
+          <label>Users:</label>
+          <br />
+          <input
+            text="name"
+            value={users}
+            onChange={(e) => setUsers(e.target.value)}
+          />
+          <br />
+
+          <button
+            className="button"
+            type="button"
+            onClick={handleUpdate(projectId)}
+          >
+            UPDATE
+          </button>
+          <br />
+        </div>
+      </form>
+    </>
+  );
+};
+export default UpdateData;
+
+//  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ const onChange = (e) => {
+    const { name, value } = e.target;
+    //state update.
+  };
+
+const intial = {
+    firstname: "",
+    lastName: "",
+  };
+
+  const [test, setTest] = useState({
+    isBusy: false,
+    isDirty: false,
+    data: intial,
+  });
+
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import { useState } from "react";
 import Welcome from "./Welcome.js";

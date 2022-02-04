@@ -14,6 +14,12 @@ const MainHeader = () => {
           <li>
             <Link to="/Products">Products</Link>
           </li>
+          <li>
+            <Link to="/Form">Form</Link>
+          </li>
+          <li>
+            <Link to="/FormList">Form List</Link>
+          </li>
           {/* <li>
                     <Link to="/Login">Login</Link>
                 </li> */}
